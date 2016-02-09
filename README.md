@@ -1,3 +1,44 @@
+# nRF8001 support for ATtiny85
+
+My contribution to the original work by [Guan Yang] (https://github.com/guanix)
+
+This work started as i had some spare sensors (a [heartrate strap] (https://www.tomtom.com/en_us/sports/accessories/sensors/heart-rate-monitor/) and a [bike cadence sensor] (https://www.tomtom.com/en_au/sports/accessories/sensors/cadence-and-speed-sensor/) for the [TomTom GPS Multisport watch] (https://www.tomtom.com/en_au/sports/multi-sport/products/multi-sport-gps-watch/dark-grey/) ) that had nRF8001 chips onboard.
+I planned to piggyback to these boards with an ATtiny85, disconnecting the existing microprocessors (the heartrate strap has a PIC18F onboard!) and sensors and using the ATtiny85 to send the data from a [cheap pulse sensor] (http://pulsesensor.com/) that is attached to my finger ( they dont work on your wrist :( ).
+
+First attempt (fail!) : the nRF8001 chips are not 5V tolerant on their SPI pins... I fried the heartrate strap.
+Second attempt (success? ): I have actually broken out the nRF8001 on the cadence sensor, but i haven't had time to do anything with it.
+
+As such, i havent actually tested this library yet - so it could be rubbish. If you do, and it works (or not) then please let me know!
+
+If anyone is interested in my work hacking the TomTom sensors i can make pictures available.
+I was actually thinking of writing up my experience (epic fail) with the heartrate sensor hack for hackaday fails :)
+
+Compilation for the ATtiny85 in debug mode (#define DEBUG_LEVEL 1 or #define DEBUG_LEVEL 2) requires [SoftwareSerialWithHalfDuplex.h](https://github.com/nickstedman/SoftwareSerialWithHalfDuplex.h)
+
+Pinout for ATtiny85 :
+* MOSI -> PB0
+* MISO -> PB1
+* SCK -> PB2
+* SS -> PB3
+* (OPTIONAL) DebugOutput (TTL) -> PB5
+
+To achieve this i made liberal use of #defines to section off a lot of the debug output, and made use of PROGMEM to free up SRAM (the ATtiny85 only has 500bytes)
+
+## RESULTS
+Initial compile size of heartrate.ino
+* 17612 bytes(Flash)
+* 1249 bytes (SRAM)
+
+Compile size of heartrate.ino with these changes, targetting the ATtiny85 with no debug output (#define DEBUG_LEVEL 0)
+* 6116 bytes (Flash)
+* 32 bytes (SRAM)
+
+Please note : I moved services.h to the library folder temporarily (compilation reasons), i plan to move it back to the project folder
+
+----
+Original README.md below
+----
+
 # nRF8001 support for Arduino
 
 This is a work in progress. Most of the functionality of the nRF8001 chip
